@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loan Prediction</title>
+    <!-- Use Tailwind CSS for a clean and responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom styles to match the provided image design -->
+    <style>
+        body {
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            background-color: #f7fafc; /* Lighter background color */
+            color: #1a202c; /* Darker text for contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+        .card {
+            background-color: #ffffff;
+            padding: 2rem 3rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            max-width: 700px;
+            width: 100%;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        input, select {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            background-color: #f7fafc;
+            transition: all 0.2s ease-in-out;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4c51bf; /* a nice indigo color */
+            box-shadow: 0 0 0 3px rgba(76, 81, 191, 0.25);
+        }
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #4c51bf;
+            color: #ffffff;
+            font-weight: 600;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease-in-out;
+            margin-top: 1rem;
+        }
+        .btn:hover {
+            background-color: #434190;
+        }
+        .result {
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            background-color: #f0fff4; /* Light green background */
+            color: #2f855a; /* Dark green text */
+            border: 1px solid #a0d3b6; /* Green border */
+        }
+        .not-approved {
+            background-color: #fff5f5; /* Light red background */
+            color: #c53030; /* Dark red text */
+            border: 1px solid #e6b2b2; /* Red border */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-8">
+    <div class="card">
+        <h1 class="text-2xl font-bold text-center mb-6">Predict Loan Status</h1>
+        
+        <form action="/predict" method="post">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                <!-- Left Column -->
+                <div>
+                    <div class="form-group">
+                        <label for="gender">Gender:</label>
+                        <select name="Gender" id="gender" required>
+                            <option value="">--Select--</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="married">Married:</label>
+                        <select name="Married" id="married" required>
+                            <option value="">--Select--</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dependents">Dependents:</label>
+                        <select name="Dependents" id="dependents" required>
+                            <option value="">--Select--</option>
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3+">3+</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="education">Education:</label>
+                        <select name="Education" id="education" required>
+                            <option value="">--Select--</option>
+                            <option value="Graduate">Graduate</option>
+                            <option value="Not Graduate">Not Graduate</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="self_employed">Self Employed:</label>
+                        <select name="Self_Employed" id="self_employed" required>
+                            <option value="">--Select--</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="applicant_income">Applicant Income:</label>
+                        <input type="number" name="ApplicantIncome" id="applicant_income" placeholder="e.g., 5000" required>
+                    </div>
+                </div>
+                
+                <!-- Right Column -->
+                <div>
+                    <div class="form-group">
+                        <label for="coapplicant_income">Coapplicant Income:</label>
+                        <input type="number" name="CoapplicantIncome" id="coapplicant_income" placeholder="e.g., 2000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loan_amount">Loan Amount (in thousands):</label>
+                        <input type="number" name="LoanAmount" id="loan_amount" placeholder="e.g., 150" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loan_amount_term">Loan Amount Term (in days):</label>
+                        <input type="number" name="Loan_Amount_Term" id="loan_amount_term" placeholder="e.g., 360" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="credit_history">Credit History:</label>
+                        <select name="Credit_History" id="credit_history" required>
+                            <option value="">--Select--</option>
+                            <option value="1.0">Yes</option>
+                            <option value="0.0">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="property_area">Property Area:</label>
+                        <select name="Property_Area" id="property_area" required>
+                            <option value="">--Select--</option>
+                            <option value="Urban">Urban</option>
+                            <option value="Semiurban">Semiurban</option>
+                            <option value="Rural">Rural</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">Predict</button>
+        </form>
+    </div>
+</body>
+</html>
